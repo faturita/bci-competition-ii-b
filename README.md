@@ -1,6 +1,6 @@
-# Markdown
+# Analisis del p300 de BCI Competition II B
 
-Quer?a dejar registrado el procesamiento del dataset BCI Competition II b 2002
+Queria dejar registrado el procesamiento del dataset [BCI Competition II b 2002](http://www.bbci.de/competition/ii/results/#albany2) 
 
 Este famoso dataset esta compuesto de un solo sujeto en tres sesiones.
 
@@ -100,7 +100,8 @@ El histograma para los no-hits:
 
 ![No hit](images/nohitlocationhistogram.png)
 
-Control: randomizando los labels se ve el mismo patron que en nohit.
+Control: randomizando los labels se ve el mismo patron en los segmentos de p300 
+que los que tienen nohit.
 
 ![p300 random](images/p300locationhistogramrandom.png)
 
@@ -115,6 +116,134 @@ De alguna manera esto es lo que hay que tratar de buscar.
 ### Single Trial 
 Estos histogramas se obtuvieron en base a las senales directas sin ningun tipo
 de promedio p.t.p. --> Ergo, picos encontrados cerca de 0.2 o cerca de 0.75 
-me dirian que ese segmento tiene ''MENOS'' chances de ser un P300.  
+me dirian que ese segmento tiene ''MENOS'' chances de ser un P300 (o algo asi). 
+
+? Como se ven estos histogramas haciendo promediados p.t.p ?
+
+P300
+
+![No hit](images/ptpnohitlocationhistogram.png)
+
+No Hit
+
+![p300 random](images/ptpp300locationhistogram.png)
+
+Se ve todavia mas marcado el mismo patron.
+
+? Como puedo implementar un p300 speller basico online real ?
+Bueno, puedo tomar cada una de las doce filas, hago las 15 repeticiones, 
+armo este histograma y para las clases (1-6) o (7-12) que tenga esta forma 
+identifico que ese es el p300.
+
+## Clasificacion con SIFT
+
+? Que tal se clasifica ?
+
+Primero quiero hacer un ejercicio simple de ver si esta todo ok. 
+
+Tomando los 73 trials para entrenamiento pero testeo sobre el conjunto de 
+testing de 31
+
+```matlab
+Building Test Matrix M for Channel 1:372 (31*(10+2))
+Building Descriptor Matrix M for Channel 1:730 (73*10)
+Building Descriptor Matrix M for Channel 1:146 (73*2)
+
+Tomando kNN con k=1 (solo el descriptor mas cercano). 
+
+Logicamente da clasificacion perfecta:
+C =
+
+   310     0
+     0    62
+```
+
+y todas las metricas de performance dan perfecto (AUC,ACC)
+
+Y adivino perfectamente la frase:
+
+```matlab
+>> Speller{1}
+
+ans = 
+
+  Columns 1 through 8
+
+    'F'    'O'    'O'    'D'    'M'    'O'    'O'    'T'
+
+  Columns 9 through 16
+
+    'H'    'A'    'M'    'P'    'I'    'E'    'C'    'A'
+
+  Columns 17 through 24
+
+    'K'    'E'    'T'    'U'    'N'    'A'    'Z'    'Y'
+
+  Columns 25 through 31
+
+    'G'    'O'    'T'    '4'    '5'    '6'    '7'
+```
+
+? Que pasa si no hago trampa ?
+
+Aca se ven los pingos, y lamentablemente no funca bien.
+
+
+```matlab
+Building Test Matrix M for Channel 1:372
+Building Descriptor Matrix M for Channel 1:420
+Building Descriptor Matrix M for Channel 1:84
+Bag Sizes 420 vs 84 
+Classifying features 2
+Channel 1 -------------
+
+C =
+
+   272    38
+    32    30
+
+
+ans =
+
+    0.8118    0.4839
+```
+
+El Accuracy cae al 81, pero la tasa de acierto de p300 al 48%.
+
+La frase que acierta es la siguiente (teniendo en cuenta que cuando no acierta
+como p300 ninguno de los grupos de 6 hay que poner uno al azar)
+
+```matlab
+>> Speller{1}
+
+ans = 
+
+  Columns 1 through 8
+
+    'E'    '1'    'A'    '7'    'L'    'Q'    'R'    'K'
+
+  Columns 9 through 16
+
+    '8'    'E'    'A'    'Q'    'I'    'A'    'B'    'F'
+
+  Columns 17 through 24
+
+    'K'    'C'    '8'    'E'    'M'    '6'    'L'    '5'
+
+  Columns 25 through 31
+
+    'A'    '1'    'W'    '4'    '3'    '7'    '8'
+
+```
+
+Acierta solo 3 (0.09%).
+
+Fijense los parches de los descriptores.  Los de p300 se ven bien:
+
+![No hit](images/patchesofp300bag.png)
+
+Los no-hits son siempre mas difusos (con algunos parecidos a p300).
+
+![p300 random](images/patchesofnohitbag.png)
 
 
