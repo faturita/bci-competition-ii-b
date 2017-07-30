@@ -89,7 +89,21 @@ El codigo para segmentar y preprocesar los flashes esta [aca](loadBCICompetition
 El P300 se define primero por su localizacion; es un evento ''time-locked'' al
 inicio del estimulo recibido.  Ahora se sabe que es mas complejo y en realidad 
 son dos (P3a y P3b) y para algunos autores tres.  Basicamente tiene que ser un 
-pico positivo a los 0.3 s despues de que arranca el estimulo.
+pico positivo a los 0.3 s despues de que arranca el estimulo.  Lotte et al 
+detallan en su buen libro que puede verificarse mediante el histograma de los
+picos obtenidos de cada segmento posterior a cada uno de los flashes.  Si 
+se separan los picos hit (deberian contener el p300) de aquellos no-hit 
+(no lo deberian contener) deberia notarse alguna diferencia.
+
+Con P300
+
+![P300](images/p300locationhistogram.png)
+
+![No hit](images/nohitlocationhistogram.png)
+
+
+
+
 
 
 
