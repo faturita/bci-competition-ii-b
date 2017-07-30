@@ -110,9 +110,9 @@ El histograma para los no-hits:
 
 Se ve entonces que para p300:
 
-*Hay menos picos a los 0.2 s.
-*Entre los 0.29 s y los 0.68 s hay mas picos.
-*A los 0.75 s hay menos otra vez, muchos menos.
+ *Hay menos picos a los 0.2 s.
+ *Entre los 0.29 s y los 0.68 s hay mas picos.
+ *A los 0.75 s hay menos otra vez, muchos menos.
 
 Control: randomizando los labels se ve el mismo patron que en nohit.
 
