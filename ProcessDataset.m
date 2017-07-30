@@ -57,7 +57,7 @@ Speller = [];
 
 % EEG(subject,trial,flash)
 [EEG, stimRange, labelRange] = loadBCICompetition(Fs, windowsize, downsize, 180, 1:1,channelRange);
-
+fdsf
 % CONTROL
 %EEG = randomizeEEG(EEG);
 

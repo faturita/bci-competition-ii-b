@@ -63,8 +63,8 @@ for subject=subjectRange
             checktrials=checktrials+size(find(ff==1),1)/(15*12);
             
             dataX = notchsignal(signal, channelRange);
-            %dataX = bandpasseeg(dataX, channelRange,Fs);
-            %dataX = decimatesignal(dataX,channelRange,downsize); 
+            dataX = bandpasseeg(dataX, channelRange,Fs);
+            dataX = decimatesignal(dataX,channelRange,downsize); 
 
             signal=dataX;            
             

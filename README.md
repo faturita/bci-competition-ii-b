@@ -25,7 +25,7 @@ SPELLERMATRIX = { { 'A','B','C','D','E','F'},
 
 donde las filas estan numeradas del 7 al 12 y las columnas del 1 al 6.
 
-El dataset esta compuesto de tres sesiones, donde las dos primeras son de 
+El dataset esta compuesto de tres sesiones (la 10, la 11 y la 12), donde las dos primeras son de 
 entrenamiento (son las que se distribuyeron en el challenge) y la ultima
 es la que habia que utilizar para decodificar el mensaje.
 
@@ -45,6 +45,7 @@ El total de trials es entonces de 73 = 42 + 31.
 
 Los trials de entrenamiento representan el mensaje:
 
+```matlab
 % CAT DOG FISH WATER BOWL HAT HAT GLOVE SHOES FISH RAT
 
 % Sesion
@@ -74,4 +75,21 @@ Los trials correspondientes al testeo tienen el mensaje
 % 12 8 4
 
 % 12 = 31
+```
+
+En el trial 40, es decir el primer trial del run 6 de la sesion 11 tiene un 
+'glitch' ya que hay 181 flashes (180=15x12) y el flash 99 del estimulo 6 se
+repite en el fash 11 con el mismo estimulo.  Asi entonces el flash 99 hay que
+descartarlo.
+
+El codigo para segmentar y preprocesar los flashes esta [aca]([loadBCICompetition.m)
+
+##?Histogramas de localizaciones
+
+El P300 se define primero por su localizacion; es un evento ''time-locked'' al
+inicio del estimulo recibido.  Ahora se sabe que es mas complejo y en realidad 
+son dos (P3a y P3b) y para algunos autores tres.  Basicamente tiene que ser un 
+pico positivo a los 0.3 s despues de que arranca el estimulo.
+
+
 
