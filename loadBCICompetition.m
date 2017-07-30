@@ -63,8 +63,8 @@ for subject=subjectRange
             checktrials=checktrials+size(find(ff==1),1)/(15*12);
             
             dataX = notchsignal(signal, channelRange);
-            dataX = bandpasseeg(dataX, channelRange,Fs);
-            dataX = decimatesignal(dataX,channelRange,downsize); 
+            %dataX = bandpasseeg(dataX, channelRange,Fs);
+            %dataX = decimatesignal(dataX,channelRange,downsize); 
 
             signal=dataX;            
             
@@ -73,13 +73,14 @@ for subject=subjectRange
 
                 if (Flashing(sample)==1) 
                     if (noflashing)
-                        % I added this becaue S11R06 contains one more
-                        % flash.
                         if (flash<=180)
-                            if (trial==40 && flash==100)
-                                [flash StimulusCode(sample)]
-                                StimulusCode(sample)=11;
-                                st(StimulusCode(sample)) = st(StimulusCode(sample))+1;
+                            if (trial==40 && sample==5329)
+                                % This sample is 5329 which is 12 samples
+                                % length.  It's wrong and has been at
+                                % sample 5341 where everything is reset and
+                                % restarts ok from there.
+                                noflashing=false;
+                                continue;
                             end
                             if (mod(flash-1,12)==0)
                                 [trial flash 312]

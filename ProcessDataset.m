@@ -1,28 +1,29 @@
 % Signal Averaging x Selection classification of P300 BCI Competition II
 rng(396544);
 
+clear all
+close all
+
 globalexperiment='';
 
-globalnumberofepochs=15;
+globalnumberofepochspertrial=15;
 globalaverages= cell(2,1);
 globalartifacts = 0;
-globalnumberofsamples=(2+10)*15-1;
+globalreps=1;
+globalnumberofepochs=(2+10)*globalreps-1;
 
 %for globalnumberofsamples=(2+10)*[10 5 1]-1
 
 clear mex;clearvars  -except global*;close all;clc;
 
-nbofclasses=(2+10)*1;
-breakonepochlimit=true;
+nbofclassespertrial=(2+10)*(15/globalreps);
+breakonepochlimit=false;
 
 % Clean all the directories where the images are located.
 cleanimagedirectory();
 
 
 % NN.NNNNN
-% data.X(sample, channel)
-% data.y(sample)  --> 0: no, 1:nohit, 2:hit
-% data.y_stim(sample) --> 1-12, 1-6 cols, 7-12 rows
 
 %     'Fz'    'Cz'    'Pz'    'Oz'    'P3'    'P4'    'PO7'    'PO8'
 
@@ -31,7 +32,7 @@ channels={ 'Fz'  ,  'Cz',    'Pz' ,   'Oz'  ,  'P3'  ,  'P4'   , 'PO7'   , 'PO8'
 
 % Parameters ==========================
 epochRange = 1:120*7*5;
-channelRange=1:2;
+channelRange=1:64;
 labelRange = zeros(1,4200);
 stimRange = zeros(1,4200);
 
@@ -39,6 +40,7 @@ stimRange = zeros(1,4200);
 imagescale=4;
 timescale=4;
 siftscale = [ 3 3];
+qKS=28;
 
 siftdescriptordensity=1;
 Fs=240;
@@ -48,7 +50,7 @@ show=0;
 % =====================================
 classifier=3;
 
-downsize=16;
+downsize=1;
 
 
 Speller = [];
@@ -76,14 +78,15 @@ for subject=1:1
         for flash=1:180
             
             % Process one epoch if the number of flashes has been reached.
-            if (processedflashes>globalnumberofsamples)
+            if (processedflashes>globalnumberofepochs)
                 if (breakonepochlimit)
                     break;
                 end
-                [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,routput,rcounter,hit,nflash, labelRange,stimRange);
-
-                globalaverages{subject}{trial}{1}.rmean = rmean;
+                [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+                globalaverages{subject}{trial}{flash}.rmean = rmean;
                 processedflashes=0;
+                for i=1:12 routput{i}=[]; end
+                for i=1:12 rcounter{i}=0; end
             end
             
             % Skip artifacts
@@ -105,22 +108,22 @@ for subject=1:1
             hit{stim} = labelh;
             nflash{stim} = flash;
             
-            if (rcounter{stim}<globalnumberofepochs)
+            if (rcounter{stim}<globalnumberofepochspertrial)
                 routput{stim} = [routput{stim}; output];
                 rcounter{stim}=rcounter{stim}+1;
             end
             
         end
-        [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,routput,rcounter,hit,nflash, labelRange,stimRange);
-        globalaverages{subject}{trial}{1}.rmean = rmean;
+        [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+        globalaverages{subject}{trial}{flash}.rmean = rmean;
         
     end
     toc
 
     %%
     epochRange=1:epoch;
-    trainingRange = 1:nbofclasses*73;
-    testRange=nbofclasses*0+1:min(nbofclasses*73,epoch);
+    trainingRange = 1:nbofclassespertrial*42;
+    testRange=nbofclassespertrial*42+1:min(nbofclassespertrial*73,epoch);
     
     %trainingRange=1:nbofclasses*35;
     
@@ -132,7 +135,6 @@ for subject=1:1
     SBJ(subject).labelRange = labelRange;
     SBJ(subject).trainingRange = trainingRange;
     SBJ(subject).testRange = testRange;
-    
     
     %%
     switch classifier
@@ -147,10 +149,10 @@ for subject=1:1
             [AccuracyPerChannel, SigmaPerChannel] = CrossValidated(F,epochRange,labelRange,channelRange, @IterativeNBNNClassifier,1);
             globalaccij1(subject,:)=AccuracyPerChannel
             globalsigmaaccij1(subject,:)=SigmaPerChannel;
-            globalaccijpernumberofsamples(globalnumberofsamples,subject,:) = globalaccij1(subject,:);
+            globalaccijpernumberofsamples(globalnumberofepochs,subject,:) = globalaccij1(subject,:);
         case 3
             for channel=channelRange
-                [DE, ACC, ERR, AUC, SC] = IterativeNBNNClassifier(F,channel,trainingRange,labelRange,testRange,false);
+                [DE(channel), ACC, ERR, AUC, SC(channel)] = IterativeNBNNClassifier(F,channel,trainingRange,labelRange,testRange,false,false);
 
                 globalaccij1(subject,channel)=1-ERR/size(testRange,2);
                 globalaccij2(subject,channel)=AUC;
@@ -158,9 +160,23 @@ for subject=1:1
             end
 
     end
-    %SpellerDecoder
-    Speller = SpellMe(F,2:2,1:73,labelRange,trainingRange,testRange,SC.predicted)
 
+    Speller = SpellMe(F,channelRange,43:73,labelRange,trainingRange,testRange,SC)
+
+    S = 'FOODMOOTHAMPIECAKETUNAZYGOT4567';
+    
+    SpAcc = [];
+    for channel=channelRange
+        counter=0;
+        for i=1:size(S,2)
+            if Speller{channel}{i}==S(i)
+                counter=counter+1;
+            end
+        end
+        SpAcc(end+1) = counter/size(S,2);
+    end
+    
+    
     SBJ(subject).DE = DE;
     SBJ(subject).SC = SC;
     

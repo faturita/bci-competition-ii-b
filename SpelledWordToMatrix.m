@@ -1,5 +1,7 @@
-%FOOD MOOT HAM PIE CAKE TUNA ZYGOT 4567
+
 function CF = SpelledWordToMatrix()
+% CF returns ids of the p300 matrix for the word
+%FOOD MOOT HAM PIE CAKE TUNA ZYGOT 4567
 
 S = 'FOODMOOTHAMPIECAKETUNAZYGOT4567';
 
@@ -19,7 +21,7 @@ for trial=1:size(S,2)
     id = find(SP==letter)-1;
     row = floor((id)/6)+1;
     col = mod(id,6)+1;
-    CF = [CF [row+6 ; col]]
+    CF = [CF [row+6 ; col]];
 end
 end
     
