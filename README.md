@@ -247,3 +247,45 @@ Los no-hits son siempre mas difusos (con algunos parecidos a p300).
 ![p300 random](images/patchesofnohitbag.png)
 
 
+Conclusiones:
+
+* P300 esta presente en este dataset.  Pude obtener algun parametro de donde esta y alguna caracterizacion.
+* Es un concurso de 15 anios y tiene varios resultados que 'promediando' obtuvieron 100% de exito en predecir la palabra.
+* Si se habla de un speller p300 no hay medida mas clara que la medida de acierto de la palabra a adivinar.
+* Usar el aspecto morfologico de la senial (pattern matching) es desafiante con p300.  Dejo en el apendice la lista de todas las cosas que probe.
+
+
+### Apendice: Todo lo probado
+
+* Radio test para la clasificacion en base a un threshold.
+* Unidades de distancia en base normalizada a la distancia media de cada bolsa
+* Ecualizar la imagen y upsamplear la senial previo a la generacion de la imagen (mejora la forma)
+* Utilizacion de cada repeticion y de el promedio para armar bolsas mas ricas.
+* Generar imagenes donde el escalado horizontal esta separado del vertical.
+* Desbalanceo eliminando al azar los descriptores que sobran de la bolsa mas grande.
+* Iterativamente reconocer los descriptores que clasifican mal y eliminarlos en forma iterativa.
+* Ubicacon del parche: ajuste con zerolevel (vertical) y qKS (horizontal)
+* Cambiar el K de kNN a 3,5 y 7 (Con k != 1 la regularizacion nunca da perfecto)
+* Usar convolucion convexa para generar mas seniales y asi balancear las bolsas (SMOTE no lo pudimos usar)
+* Clasificar single trial basado en imagenes de seniales promediadas.
+* Realizar el promedio p.t.p en base a diferentes canales (hacer el promedio horizontal).
+* Diferentes parametros de imagen y parches ( 3 3 y 4 4 es el que mejor da).
+* Usar mas de un qKS (poner varios de forma que no se solapen).
+* Reprogramar el histograma de SIFT para que permita escalas independientes en X e Y.
+* Aplicacion de ZSCORE para normalizar la senial (aplicar ZSCORE robusto).
+* Eliminado el problema de la varianza ya que SIFT es muy sensible a la varianza de la senial.
+* Implementar una clasificacion unaria identificando simplemente de las 6 clases cual es la que tiene el p300.  Hacerlo en base al histograma de distancias y tambien en base a la identificacion de la distancia mas corta)
+* Enriquecer la senial de P300 con una senial de p300: Mejora !
+* Realizar promedios p.t.p. basados en la mediana. Basados en dynamic time warping (DTW).
+* Eliminacion de artefactos (con/sin)
+* Ajustas el BASELINE REMOVAL  e implementarlo antes de aplicar los filtros.  Probar sacandolo.
+* Cruzar longitudinalmente los descriptores para identificar los otros sujetos generando mas descriptores.
+* Invertir la clasificacion de NBNN (cual es la imagen query y cual es la base de datos).
+* Cambio del kernel de NBNN.
+* Eliminacion de las seniales que tienen una "varianza distorsionada"
+* Ensemble Classifier (votacion) en base a los diferentes canales.
+* Utilizar el descriptor de HOG (en vez del de SIFT)
+* Ejecucion del codigo para obtener tambien la orientacion "sugerida" para cada descriptor.
+* Pruebas en diversas OCTAVAS.
+* Descriptor rectangular.
+
