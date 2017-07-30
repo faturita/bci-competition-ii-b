@@ -13,7 +13,7 @@ for subject=1:1
             amplitude=maxamplitude;
             location=locations(maxamplocation);
             label=EEG(subject,trial,flash).label;
-            %label=randi(2);
+            label=randi(2);
             amplitudehistogram{label} = [amplitudehistogram{EEG(subject,trial,flash).label}; amplitude];
             locationhistogram{label} = [locationhistogram{EEG(subject,trial,flash).label}; location];
         end
