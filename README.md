@@ -125,16 +125,16 @@ Se ve entonces que para p300:
 * Entre los 0.29 s y los 0.68 s hay mas picos.
 * A los 0.75 s hay menos otra vez, muchos menos.
 
-De alguna manera esto es lo que hay que tratar de buscar, esto es el p300.
+De alguna manera esto es lo que hay que tratar de buscar; esto es el p300.
 
 ### Single Trial 
 Estos histogramas se obtuvieron en base a las senales directas sin ningun tipo
 de promedio p.t.p. --> Ergo, picos encontrados cerca de 0.2 o cerca de 0.75 
 me dirian que ese segmento tiene ''MENOS'' chances de ser un P300 (o algo asi). 
 
-'''Con esto veo que si alguien dice que puede identificar p300 single trial..., es posible'''
+'''Con esto veo que si alguien dice que puede identificar p300 single trial..., bueno es posible'''
 
-? Como se ven estos histogramas haciendo promediados p.t.p ?
+Como se ven estos histogramas haciendo promediados p.t.p ?
 
 P300
 
@@ -146,19 +146,19 @@ No Hit
 
 Se ve todavia mas marcado el mismo patron.  Incluso para algunas localizaciones ni hay registros.
 
-? Como puedo implementar un p300 speller basico online real ?
-Bueno, puedo tomar cada una de las doce filas, hago las 15 repeticiones, 
+Como puedo implementar un p300 speller basico online real ?
+Puedo tomar cada una de las doce filas, hago las 15 repeticiones, 
 armo este histograma y para las clases (1-6) o (7-12) que tenga esta forma 
-identifico que ese es el p300.
+identifico que ese es el p300 (armo un feature con el histograma y lo clasifico con lda).
 
 ## Clasificacion con SIFT
 
-? Que tal se clasifica ?
+Que tal se clasifica ?
 
 Primero quiero hacer un ejercicio simple de ver si esta todo ok. 
 
 Tomando los 73 trials para entrenamiento pero testeo sobre el conjunto de 
-testing de 31
+testing de 31 (es decir que los descriptores que usa para testear estan ya en las bolsas).
 
 ```matlab
 Building Test Matrix M for Channel 1:372 (31*(10+2))
@@ -200,7 +200,7 @@ ans =
     'G'    'O'    'T'    '4'    '5'    '6'    '7'
 ```
 
-? Que pasa si no hago trampa ?
+Que pasa si no hago trampa ?
 
 Aca se ven los pingos, y lamentablemente no funca bien.
 
@@ -281,6 +281,8 @@ Dejo en el apendice la lista de todas las cosas que estuve probando durante esto
 * Radio test para la clasificacion en base a un threshold.
 * Unidades de distancia en base normalizada a la distancia media de cada bolsa
 * Ecualizar la imagen y upsamplear la senial previo a la generacion de la imagen (mejora la forma)
+* Clasificar los descriptores basados en una red neuronal multicapa.  Usando SVM. Reduciendo el descriptor a 32 (los cuadros del centro como el dice el paper).
+* Chequeo de linealidad de los descriptores generados. El tiempo que demora es proporcional a cuanto acierta o no para cada sujeto.  Es muy dependiente de cada sujeto.
 * Utilizacion de cada repeticion y de el promedio para armar bolsas mas ricas.
 * Generar imagenes donde el escalado horizontal esta separado del vertical.
 * Desbalanceo eliminando al azar los descriptores que sobran de la bolsa mas grande.
