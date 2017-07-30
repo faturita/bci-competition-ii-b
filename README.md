@@ -82,7 +82,7 @@ En el trial 40, es decir el primer trial del run 6 de la sesion 11 tiene un
 repite en el fash 11 con el mismo estimulo.  Asi entonces el flash 99 hay que
 descartarlo.
 
-El codigo para segmentar y preprocesar los flashes esta [aca]([loadBCICompetition.m)
+El codigo para segmentar y preprocesar los flashes esta [aca](loadBCICompetition.m)
 
 ##?Histogramas de localizaciones
 
