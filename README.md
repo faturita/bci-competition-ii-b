@@ -100,21 +100,23 @@ se obtiene la amplitud y la localizacion (en relacion al inicio del segmento que
 coincide con el inicio del estimulo).  De esos valores se guardan todos los 
 correspondientes a segmentos hits y tambien aquellos no-hits.
 
-Con P300
+El histograma para P300:
 
 ![P300](images/p300locationhistogram.png)
+
+El histograma para los no-hits:
 
 ![No hit](images/nohitlocationhistogram.png)
 
 Se ve entonces que para p300:
 
-#?Hay menos picos a los 0.2 s.
-#?Entre los 0.29 s y los 0.68 s hay mas picos.
-#?A los 0.75 s hay menos otra vez, muchos menos.
+*Hay menos picos a los 0.2 s.
+*Entre los 0.29 s y los 0.68 s hay mas picos.
+*A los 0.75 s hay menos otra vez, muchos menos.
 
 Control: randomizando los labels se ve el mismo patron que en nohit.
 
-![p300 random](p300locationhistogramrandom.png)
+![p300 random](images/p300locationhistogramrandom.png)
 
 
 
