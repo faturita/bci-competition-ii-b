@@ -9,7 +9,7 @@ globalexperiment='';
 globalnumberofepochspertrial=15;
 globalaverages= cell(2,1);
 globalartifacts = 0;
-globalreps=1;
+globalreps=15;
 globalnumberofepochs=(2+10)*globalreps-1;
 
 %for globalnumberofsamples=(2+10)*[10 5 1]-1
@@ -32,7 +32,7 @@ channels={ 'Fz'  ,  'Cz',    'Pz' ,   'Oz'  ,  'P3'  ,  'P4'   , 'PO7'   , 'PO8'
 
 % Parameters ==========================
 epochRange = 1:120*7*5;
-channelRange=1:64;
+channelRange=1:20;
 labelRange = zeros(1,4200);
 stimRange = zeros(1,4200);
 
@@ -50,14 +50,14 @@ show=0;
 % =====================================
 classifier=3;
 
-downsize=1;
+downsize=16;
 
 
 Speller = [];
 
 % EEG(subject,trial,flash)
 [EEG, stimRange, labelRange] = loadBCICompetition(Fs, windowsize, downsize, 180, 1:1,channelRange);
-fdsf
+
 % CONTROL
 %EEG = randomizeEEG(EEG);
 
@@ -119,10 +119,10 @@ for subject=1:1
         
     end
     toc
-
+fdf
     %%
     epochRange=1:epoch;
-    trainingRange = 1:nbofclassespertrial*42;
+    trainingRange = 1:nbofclassespertrial*73;
     testRange=nbofclassespertrial*42+1:min(nbofclassespertrial*73,epoch);
     
     %trainingRange=1:nbofclasses*35;

@@ -6,14 +6,6 @@ Este famoso dataset esta compuesto de un solo sujeto en tres sesiones.
 
 El protocolo es similar al de Donchin et al: la matriz tipica de p300
 
-%FOOD MOOT HAM PIE CAKE TUNA ZYGOT 4567
-
-S = 'FOODMOOTHAMPIECAKETUNAZYGOT4567';
-
-CF = [];
-
-SP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789_';
-
 ```matlab
 SPELLERMATRIX = { { 'A','B','C','D','E','F'},
                 { 'G','H','I','J','K','L'},
@@ -46,7 +38,7 @@ El total de trials es entonces de 73 = 42 + 31.
 Los trials de entrenamiento representan el mensaje:
 
 ```matlab
-% CAT DOG FISH WATER BOWL HAT HAT GLOVE SHOES FISH RAT
+% Training: CAT DOG FISH WATER BOWL HAT HAT GLOVE SHOES FISH RAT
 
 % Sesion
 % 10        1   3 CAT
@@ -64,7 +56,7 @@ Los trials de entrenamiento representan el mensaje:
 % 10 + 11 = 42 
 
 Los trials correspondientes al testeo tienen el mensaje
-% FOOD MOOT HAM PIE CAKE TUNA ZYGOT 4567
+% Testing: FOOD MOOT HAM PIE CAKE TUNA ZYGOT 4567
 % 12 1 4
 % 12 2 4
 % 12 3 3
@@ -100,7 +92,7 @@ se obtiene la amplitud y la localizacion (en relacion al inicio del segmento que
 coincide con el inicio del estimulo).  De esos valores se guardan todos los 
 correspondientes a segmentos hits y tambien aquellos no-hits.
 
-El histograma para P300:
+El histograma para P300 (canal 20)
 
 ![P300](images/p300locationhistogram.png)
 
@@ -108,21 +100,21 @@ El histograma para los no-hits:
 
 ![No hit](images/nohitlocationhistogram.png)
 
+Control: randomizando los labels se ve el mismo patron que en nohit.
+
+![p300 random](images/p300locationhistogramrandom.png)
+
 Se ve entonces que para p300:
-
-
 
 * Hay menos picos a los 0.2 s.
 * Entre los 0.29 s y los 0.68 s hay mas picos.
 * A los 0.75 s hay menos otra vez, muchos menos.
 
-Control: randomizando los labels se ve el mismo patron que en nohit.
+De alguna manera esto es lo que hay que tratar de buscar.
 
-![p300 random](images/p300locationhistogramrandom.png)
-
-
-
-
-
+### Single Trial 
+Estos histogramas se obtuvieron en base a las senales directas sin ningun tipo
+de promedio p.t.p. --> Ergo, picos encontrados cerca de 0.2 o cerca de 0.75 
+me dirian que ese segmento tiene ''MENOS'' chances de ser un P300.  
 
 
