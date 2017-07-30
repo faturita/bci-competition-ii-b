@@ -1,6 +1,14 @@
 # Analisis del p300 de BCI Competition II B
 
-Queria dejar registrado el procesamiento del dataset [BCI Competition II b 2002](http://www.bbci.de/competition/ii/results/#albany2) 
+Me hice la siguiente pregunta: ? Como puedo implementar un p300 rapido online real ?
+Me di cuenta que necesitaba darle un par de vueltas mas porque no lo iba a poder implementar 
+directamente sin aplicar una receta tipica de algun paper (e.g.SWLDA).
+
+Una situacion un tanto frustante es siempre sentir que estoy en arenas movedizas y no se de donde
+terminar agarrandome.  (Que esta bien, que esta mal, que se y que no se).
+
+Tampoco queria tener el vicio del dataset que tanto probamos... Asi que
+tome el dataset de [BCI Competition II b 2002](http://www.bbci.de/competition/ii/results/#albany2) y "le di masa".
 
 Este famoso dataset esta compuesto de un solo sujeto en tres sesiones.
 
@@ -31,11 +39,17 @@ Para cada una de las 15 repeticiones de 12 de cada trial, la fila o la
 columna flashea durante 0.1 s, seguido de un periodo de descanso de 0.075 s.
 Los flashes se generan a F = 5.7 Hz.
 
-El dataset fue obtenido con 64 canales diferentes y a Fs = 240 Hz.
+El dataset fue obtenido con 64 canales diferentes y a Fs = 240 Hz.  Esta distribuido
+como un archivo de matlab pero es un dataset real asi que hay que implementar el mecanismo
+para sacar toda la informacion que tiene.  Por ejemplo a los trial de entrenamiento
+hay que incorporarles los labels para poder usarlo como mecanismo de verificacion de 
+performance.
 
-El total de trials es entonces de 73 = 42 + 31.
+El total de trials es de 73 = 42 + 31.
 
-Los trials de entrenamiento representan el mensaje:
+Los trials de entrenamiento 'copy-spell' son el siguiente mensaje (al sujeto se 
+le dice que tiene que ir identificando cada letra una a una por eso se llama
+copy-spell).
 
 ```matlab
 % Training: CAT DOG FISH WATER BOWL HAT HAT GLOVE SHOES FISH RAT
@@ -111,12 +125,14 @@ Se ve entonces que para p300:
 * Entre los 0.29 s y los 0.68 s hay mas picos.
 * A los 0.75 s hay menos otra vez, muchos menos.
 
-De alguna manera esto es lo que hay que tratar de buscar.
+De alguna manera esto es lo que hay que tratar de buscar, esto es el p300.
 
 ### Single Trial 
 Estos histogramas se obtuvieron en base a las senales directas sin ningun tipo
 de promedio p.t.p. --> Ergo, picos encontrados cerca de 0.2 o cerca de 0.75 
 me dirian que ese segmento tiene ''MENOS'' chances de ser un P300 (o algo asi). 
+
+'''Con esto veo que si alguien dice que puede identificar p300 single trial..., es posible'''
 
 ? Como se ven estos histogramas haciendo promediados p.t.p ?
 
@@ -128,7 +144,7 @@ No Hit
 
 ![p300 random](images/ptpp300locationhistogram.png)
 
-Se ve todavia mas marcado el mismo patron.
+Se ve todavia mas marcado el mismo patron.  Incluso para algunas localizaciones ni hay registros.
 
 ? Como puedo implementar un p300 speller basico online real ?
 Bueno, puedo tomar cada una de las doce filas, hago las 15 repeticiones, 
@@ -246,13 +262,18 @@ Los no-hits son siempre mas difusos (con algunos parecidos a p300).
 
 ![p300 random](images/patchesofnohitbag.png)
 
+Hay algo de info, pero como atraparla ???
+
 
 Conclusiones:
 
 * P300 esta presente en este dataset.  Pude obtener algun parametro de donde esta y alguna caracterizacion.
 * Es un concurso de 15 anios y tiene varios resultados que 'promediando' obtuvieron 100% de exito en predecir la palabra.
 * Si se habla de un speller p300 no hay medida mas clara que la medida de acierto de la palabra a adivinar.
-* Usar el aspecto morfologico de la senial (pattern matching) es desafiante con p300.  Dejo en el apendice la lista de todas las cosas que probe.
+* Usar el aspecto morfologico de la senial (pattern matching) es desafiante con p300.  
+* Mirando las seniales promediadas ''se ve'' algo mas notorio el P300 pero es dificil capturarlo.
+
+Dejo en el apendice la lista de todas las cosas que estuve probando durante estos casi 6 meses (despues del reject del paper).
 
 
 ### Apendice: Todo lo probado
