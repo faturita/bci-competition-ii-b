@@ -269,14 +269,14 @@ Conclusiones:
 
 * P300 esta presente en este dataset.  Pude obtener algun parametro de donde esta y alguna caracterizacion.
 * Es un concurso de 15 anios y tiene varios resultados que 'promediando' obtuvieron 100% de exito en predecir la palabra.
-* Si se habla de un speller p300 no hay medida mas clara que la medida de acierto de la palabra a adivinar.
+* Si se habla de un speller p300 no hay medida mas clara que la medida de acierto de la palabra a adivinar. 
 * Usar el aspecto morfologico de la senial (pattern matching) es desafiante con p300.  
 * Mirando las seniales promediadas ''se ve'' algo mas notorio el P300 pero es dificil capturarlo.
 
 Dejo en el apendice la lista de todas las cosas que estuve probando durante estos casi 6 meses (despues del reject del paper).
 
 
-### Apendice: Todo lo probado
+### Apendice 1: Todo lo probado
 
 * Radio test para la clasificacion en base a un threshold.
 * Unidades de distancia en base normalizada a la distancia media de cada bolsa
@@ -312,3 +312,57 @@ Dejo en el apendice la lista de todas las cosas que estuve probando durante esto
 * Pruebas en diversas OCTAVAS.
 * Descriptor rectangular.
 
+
+### Apendice 2: Clasificacion directa por redes neuronales
+
+Reemplace directamente la generacion del Descriptor de 128 por un nuevo feature
+conformado por la concatenacion de los segmentos de 15 muestras de todos los 64 canales.  
+Este es un esquema similar al que usan las italianas en el paper y que esta en muchos otros trabajos.
+
+```matlab
+for channel=channelRange
+    feature = [feature ; regsignal(:,channel)];
+end
+```
+
+Asi el feature queda conformado por un vector de 960 elementos.  Luego a cada
+uno de estos features los clasifico con una red neuronal feedforward con 128 
+neuronas en la unica capa oculta, y utilizando el metodo de aprendizaje '''Conjugate gradient backpropagation with Powell-Beale restarts'''
+
+Con esta configuracion se alcanza una deteccion de las letras del speller de alrededor del 80% (ACC 95% y AUC 92%):
+
+```matlab
+>> [a,b] = max(SpAcc)
+
+a =
+
+    0.8065
+
+
+b =
+
+     7
+
+>> Speller{7}
+
+ans = 
+
+  Columns 1 through 8
+
+    'F'    'O'    'O'    'D'    'M'    'N'    'O'    'T'
+
+  Columns 9 through 16
+
+    'H'    'M'    'M'    'P'    'I'    'A'    'C'    'A'
+
+  Columns 17 through 24
+
+    'K'    'E'    'T'    'U'    'R'    'A'    'Z'    '3'
+
+  Columns 25 through 31
+
+    'N'    'O'    'T'    '4'    '5'    '6'    '7'
+
+```
+
+Aunque tiene algunos errores acierta bastantes letras.

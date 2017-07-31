@@ -5,41 +5,43 @@ for i=1:2 locationhistogram{i}=[]; end
 
 channel=20;
 
-% for subject=1:1
-%     for trial=1:73
-%         for flash=1:180
-%             [amplitudes,locations] = findpeaks(EEG(subject,trial,flash).EEG(:,channel));
-%             [maxamplitude,maxamplocation] = max(amplitudes);
-%             amplitude=maxamplitude;
-%             location=locations(maxamplocation);
-%             label=EEG(subject,trial,flash).label;
-%             %label=randi(2);
-%             amplitudehistogram{label} = [amplitudehistogram{EEG(subject,trial,flash).label}; amplitude];
-%             locationhistogram{label} = [locationhistogram{EEG(subject,trial,flash).label}; location];
-%         end
-%     end
-% end
+rawhistogram=true;
 
-
-
-for subject=1:1
-    for trial=1:73
-        labels=[];
-        for i=1:12
-            labels(EEG(subject,trial,i).stim) = EEG(subject,trial,i).label;
+if (rawhistogram)
+    for subject=1:1
+        for trial=1:73
+            for flash=1:180
+                [amplitudes,locations] = findpeaks(EEG(subject,trial,flash).EEG(:,channel));
+                [maxamplitude,maxamplocation] = max(amplitudes);
+                amplitude=maxamplitude;
+                location=locations(maxamplocation);
+                label=EEG(subject,trial,flash).label;
+                %label=randi(2);
+                amplitudehistogram{label} = [amplitudehistogram{EEG(subject,trial,flash).label}; amplitude];
+                locationhistogram{label} = [locationhistogram{EEG(subject,trial,flash).label}; location];
+            end
         end
+    end
+else
+    for subject=1:1
+        for trial=1:73
+            labels=[];
+            for i=1:12
+                labels(EEG(subject,trial,i).stim) = EEG(subject,trial,i).label;
+            end
 
-        for i=1:12
-            signal=globalaverages{subject}{trial}{180}.rmean{i}(:,channel);
-            [amplitudes,locations] = findpeaks(signal);
-            [maxamplitude,maxamplocation] = max(amplitudes);
-            amplitude=maxamplitude;
-            location=locations(maxamplocation);
-            label=labels(i);
-            %label=randi(2);
-            amplitudehistogram{label} = [amplitudehistogram{label}; amplitude];
-            locationhistogram{label} = [locationhistogram{label}; location];
-            
+            for i=1:12
+                signal=globalaverages{subject}{trial}{180}.rmean{i}(:,channel);
+                [amplitudes,locations] = findpeaks(signal);
+                [maxamplitude,maxamplocation] = max(amplitudes);
+                amplitude=maxamplitude;
+                location=locations(maxamplocation);
+                label=labels(i);
+                %label=randi(2);
+                amplitudehistogram{label} = [amplitudehistogram{label}; amplitude];
+                locationhistogram{label} = [locationhistogram{label}; location];
+
+            end
         end
     end
 end

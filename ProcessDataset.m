@@ -32,7 +32,7 @@ channels={ 'Fz'  ,  'Cz',    'Pz' ,   'Oz'  ,  'P3'  ,  'P4'   , 'PO7'   , 'PO8'
 
 % Parameters ==========================
 epochRange = 1:120*7*5;
-channelRange=1:1;
+channelRange=1:64;
 labelRange = zeros(1,4200);
 stimRange = zeros(1,4200);
 
@@ -48,7 +48,7 @@ windowsize=1;
 expcode=2400;
 show=0;
 % =====================================
-classifier=3;
+classifier=1;
 
 downsize=16;
 
@@ -81,7 +81,9 @@ for subject=1:1
                 if (breakonepochlimit)
                     break;
                 end
-                [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+                %[F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+                [F, rmean, epoch, labelRange, stimRange] = AverageStandardFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+  
                 globalaverages{subject}{trial}{flash}.rmean = rmean;
                 processedflashes=0;
                 for i=1:12 routput{i}=[]; end
@@ -113,7 +115,9 @@ for subject=1:1
             end
             
         end
-        [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+        %[F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+        [F, rmean, epoch, labelRange, stimRange] = AverageStandardFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+  
         globalaverages{subject}{trial}{flash}.rmean = rmean;
         
     end
@@ -151,7 +155,7 @@ for subject=1:1
             globalaccijpernumberofsamples(globalnumberofepochs,subject,:) = globalaccij1(subject,:);
         case 3
             for channel=channelRange
-                [DE(channel), ACC, ERR, AUC, SC(channel)] = IterativeNBNNClassifier(F,channel,trainingRange,labelRange,testRange,false,false);
+                [DE(channel), ACC, ERR, AUC, SC(channel)] = IterativeNBNNClassifier(F,channel,trainingRange,labelRange,testRange,false,true);
 
                 globalaccij1(subject,channel)=1-ERR/size(testRange,2);
                 globalaccij2(subject,channel)=AUC;
@@ -160,7 +164,7 @@ for subject=1:1
 
     end
 
-    Speller = SpellMe(F,channelRange,43:73,labelRange,trainingRange,testRange,SC)
+    Speller = SpellMe(F,channelRange,43:73,labelRange,trainingRange,testRange,SC);
 
     S = 'FOODMOOTHAMPIECAKETUNAZYGOT4567';
     
