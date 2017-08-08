@@ -278,6 +278,8 @@ Dejo en el apendice la lista de todas las cosas que estuve probando durante esto
 
 ### Apendice 1: Todo lo probado
 
+* Distancia de Hillganger.
+* Implementación de xDAWN para vincular la información multicanal.
 * Ecualizacion de los descriptores (se usan todos los valores de 0 255 de manera que esten equilibrados).
 * Utilizacion de espacios positivos usando la distancia coseno (los descriptores van entre 0 y 1 como los de Lowe).
 * Clasificación basada en pesos que se obtienen chequeando la disimilitud de cada descriptor hit contra los descriptores nohits.  Primero usamos una metria de 1-Di/E Di  y luego usamos el kernel de Epanechnikov
