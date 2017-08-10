@@ -38,17 +38,35 @@ stimRange = zeros(1,4200);
 
 
 imagescale=4;
+timescale=8;
+siftscale = [ 3 3];
+qKS=32-4:35;
+qKS=8;
+minimagesize=floor(sqrt(2)*15*siftscale(2)+1);
+
+
+imagescale=4;
 timescale=4;
 siftscale = [ 3 3];
-qKS=28;
+qKS=30;
+minimagesize=floor(sqrt(2)*15*siftscale(2)+1);
+
 
 siftdescriptordensity=1;
 Fs=240;
 windowsize=1;
 expcode=2400;
 show=0;
+
+%[St Sv timescale imagescale] = CalculateDescriptor(Fs, windowsize, 0.8, 128,256)
+%siftscale = [St Sv];
+
+%qKS = floor(128/2);
+%minimagesize=floor(sqrt(2)*15*siftscale(2)+1);
+
+
 % =====================================
-classifier=1;
+classifier=6;
 
 downsize=16;
 
@@ -81,8 +99,8 @@ for subject=1:1
                 if (breakonepochlimit)
                     break;
                 end
-                %[F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
-                [F, rmean, epoch, labelRange, stimRange] = AverageStandardFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+                [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,minimagesize,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
+                %[F, rmean, epoch, labelRange, stimRange] = AverageStandardFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
   
                 globalaverages{subject}{trial}{flash}.rmean = rmean;
                 processedflashes=0;
@@ -115,9 +133,8 @@ for subject=1:1
             end
             
         end
-        %[F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
-        [F, rmean, epoch, labelRange, stimRange] = AverageStandardFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
-  
+        [F, rmean, epoch, labelRange, stimRange] = AverageGetFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,minimagesize,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);       
+        %[F, rmean, epoch, labelRange, stimRange] = AverageStandardFeature(F,subject,epoch,trial,channelRange,Fs,imagescale,timescale,siftscale,siftdescriptordensity,qKS,routput,rcounter,hit,nflash, labelRange,stimRange);
         globalaverages{subject}{trial}{flash}.rmean = rmean;
         
     end
@@ -141,6 +158,20 @@ for subject=1:1
     
     %%
     switch classifier
+        case 5
+            for channel=channelRange
+                [DE(channel), ACC, ERR, AUC, SC(channel)] = LDAClassifier(F,labelRange,trainingRange,testRange,channel);
+                globalaccij1(subject,channel)=ACC;
+                globalsigmaaccij1 = globalaccij1;
+                globalaccij2(subject,channel)=AUC;
+            end  
+        case 4
+            for channel=channelRange
+                [DE(channel), ACC, ERR, AUC, SC(channel)] = SVMClassifier(F,labelRange,trainingRange,testRange,channel);
+                globalaccij1(subject,channel)=ACC;
+                globalsigmaaccij1 = globalaccij1;
+                globalaccij2(subject,channel)=AUC;
+            end            
         case 1
             for channel=channelRange
                 [DE(channel), ACC, ERR, AUC, SC(channel)] = NNetClassifier(F,labelRange,trainingRange,testRange,channel);
@@ -155,8 +186,18 @@ for subject=1:1
             globalaccijpernumberofsamples(globalnumberofepochs,subject,:) = globalaccij1(subject,:);
         case 3
             for channel=channelRange
-                [DE(channel), ACC, ERR, AUC, SC(channel)] = IterativeNBNNClassifier(F,channel,trainingRange,labelRange,testRange,false,true);
+                [DE(channel), ACC, ERR, AUC, SC(channel)] = IterativeNBNNClassifier(F,channel,trainingRange,labelRange,testRange,false,false);
 
+                globalaccij1(subject,channel)=1-ERR/size(testRange,2);
+                globalaccij2(subject,channel)=AUC;
+                globalsigmaaccij1 = globalaccij1;
+            end
+        case 6
+            for channel=channelRange
+                DE(channel) = NBNNFeatureExtractor(F,channel,trainingRange,labelRange,[1 2],false); 
+
+                [ACC, ERR, AUC, SC(channel)] = NBMultiClass(F,DE(channel),channel,testRange,labelRange,false);
+                                                                        
                 globalaccij1(subject,channel)=1-ERR/size(testRange,2);
                 globalaccij2(subject,channel)=AUC;
                 globalsigmaaccij1 = globalaccij1;

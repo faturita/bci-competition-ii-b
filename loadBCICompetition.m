@@ -35,7 +35,7 @@ verbose=true;
 
 %EEG = zeros(size(subjectRange,2),size(datatrial,2),flashespertrial);
 artifactcount = 0;            
-    
+artifact=false;
 stimRange = [];
 labelRange = [];
 trial=0;
@@ -85,11 +85,18 @@ for subject=subjectRange
                             if (mod(flash-1,12)==0)
                                 [trial flash 312]
                                 st
+                                signalsegment = signal(ceil(sample/downsize):ceil(sample/downsize)+(240*3)/downsize-1,channelRange);
+                                size(signalsegment)
+                                artifact=isartifact(signalsegment,ones(size(signalsegment,1),1)*std(signalsegment)*4);
                             end
                             stimRange(end+1) = StimulusCode(sample);
-                            EEG(subject,trial,flash).isartifact = false;
                             %EEG(subject,trial,flash).EEG = signal(sample:sample+240-1,channelRange);
+                            
                             EEG(subject,trial,flash).EEG = signal(ceil(sample/downsize):ceil(sample/downsize)+240/downsize-1,channelRange);
+
+                            signalsegment = EEG(subject,trial,flash).EEG;
+                            EEG(subject,trial,flash).isartifact = artifact;
+                            
                             EEG(subject,trial,flash).stim = StimulusCode(sample);
                             if ((exist('StimulusType')))
                                 EEG(subject,trial,flash).label = StimulusType(sample)+1;             
