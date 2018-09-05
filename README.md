@@ -278,6 +278,10 @@ Dejo en el apendice la lista de todas las cosas que estuve probando durante esto
 
 ### Apendice 1: Todo lo probado
 
+* Ajuste de la posicion del descriptor en t basado en la seleccion del que tiene distancia minima con el mas cercano de cada clase.
+* Clasificación por SWLDA (implementado en matlab).
+* Ajuste de los descriptores usando stepwiseglm
+* Clasificación usando NNBN invertida pero comparando 1 vs 6, 1 vs 6 (multiclase).
 * Distancia de Hillganger.
 * Implementación de xDAWN para vincular la información multicanal.
 * Ecualizacion de los descriptores (se usan todos los valores de 0 255 de manera que esten equilibrados).
